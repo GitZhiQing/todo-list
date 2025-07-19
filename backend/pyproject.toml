@@ -1,0 +1,61 @@
+[project]
+name = "backend"
+version = "0.1.0"
+description = "Todo List Web API"
+readme = "README.md"
+requires-python = ">=3.13"
+dependencies = [
+    "aiosqlite>=0.21.0",
+    "fastapi[all]>=0.116.1",
+    "loguru>=0.7.3",
+    "pydantic-settings>=2.10.1",
+    "sqlalchemy[asyncio]>=2.0.41",
+    "tenacity>=9.1.2",
+    "ujson>=5.10.0",
+]
+
+[[tool.uv.index]]
+url = "https://mirrors.tuna.tsinghua.edu.cn/pypi/web/simple"
+default = true
+
+[tool.ruff]
+exclude = [
+    ".venv",
+    ".idea",
+    ".vscode",
+    ".uv_cache",
+    ".ruff_cache",
+    ".pytest_cache",
+    "__pycache__",
+]
+target-version = "py312"
+line-length = 120
+indent-width = 4
+
+[tool.ruff.lint]
+select = [
+    "E",      # pycodestyle errors
+    "W",      # pycodestyle warnings
+    "F",      # pyflakes
+    "I",      # isort
+    "B",      # flake8-bugbear
+    "C4",     # flake8-comprehensions
+    "UP",     # pyupgrade
+    "ARG001", # unused arguments in functions
+]
+ignore = [
+    "B008", # do not perform function calls in argument defaults
+    "W191", # indentation contains tabs
+    "B904", # Allow raising exceptions without from e, for HTTPException
+]
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+
+[dependency-groups]
+dev = ["ruff>=0.12.4"]
+
+[tool.ruff.lint.pyupgrade]
+# Preserve types, even if a file imports `from __future__ import annotations`.
+keep-runtime-typing = true
