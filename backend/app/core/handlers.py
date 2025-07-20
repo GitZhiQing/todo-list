@@ -10,8 +10,8 @@ from app.core.exception import BizException
 from app.schemas import BaseResponse
 
 
-def success(data: Any = None, msg: str = "success") -> BaseResponse:
-    return BaseResponse(code=200, msg=msg, data=data)
+def success(code: int = 200, msg: str = "success", data: Any = None) -> BaseResponse:
+    return BaseResponse(code=code, msg=msg, data=data)
 
 
 def failed(code: int = 400, msg: str = "failed", data: Any = None) -> BaseResponse:
