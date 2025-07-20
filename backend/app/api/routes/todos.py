@@ -49,7 +49,7 @@ async def read_todo(
     - **todo_id**: 要查询的 Todo ID
     """
     todo = await todo_crud.get_or_404(session, todo_id=todo_id)
-    return success(todo)
+    return success(data=todo)
 
 
 @router.get(
@@ -73,7 +73,7 @@ async def read_todos(
     skip = (page - 1) * size
     total = await todo_crud.count(session)
     items = await todo_crud.get_multi(session, skip=skip, limit=size)
-    return success(PageResult(total=total, page=page, size=size, items=items))
+    return success(data=PageResult(total=total, page=page, size=size, items=items))
 
 
 @router.put(
@@ -95,7 +95,7 @@ async def update_todo(
     - **todo_in**: Todo 更新数据模型
     """
     updated = await todo_crud.update(session, todo_id=todo_id, todo_in=todo_in)
-    return success(updated)
+    return success(data=updated)
 
 
 @router.delete(
