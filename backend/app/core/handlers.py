@@ -31,7 +31,9 @@ def register_handlers(app: FastAPI):
         request: Request,  # noqa: ARG001
         exc: RequestValidationError,
     ):
-        return JSONResponse(status_code=200, content=failed(code=422, msg="参数错误", data=exc.errors()).model_dump())
+        # 由于自动生成的 API 文档中，参数错误定义为返回 422 错误，且未找到好的覆盖方法
+        # 故不能统一设置 status_code 为 200
+        return JSONResponse(status_code=422, content=failed(code=422, msg="参数错误", data=exc.errors()).model_dump())
 
     @app.exception_handler(StarletteHTTPException)
     async def http_exception_handler(

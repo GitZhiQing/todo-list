@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+from fastapi.openapi.utils import validation_error_response_definition
 
 from app.api.routes import router as api_router
 from app.core.config import settings
@@ -13,6 +14,8 @@ def create_app() -> FastAPI:
         openapi_url=f"{settings.API_PREFIX}/openapi.json",
         lifespan=lifespan,
         debug=settings.DEBUG,
+        # 覆盖参数验证错误的响应定义(保证 API 文档正确)
+        validation_error_response_definition=validation_error_response_definition,
     )
     register_middlewares(app)  # 注册中间件
     register_handlers(app)  # 注册异常处理器
@@ -29,6 +32,7 @@ def create_app() -> FastAPI:
         }
 
     app.include_router(api_router, prefix=settings.API_PREFIX)
+
     return app
 
 
