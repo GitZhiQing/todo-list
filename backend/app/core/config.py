@@ -11,7 +11,7 @@ class Settings(BaseSettings):
     APP_ENV: Literal["development", "testing", "production"] = "development"
     HOST: str = "127.0.0.1"
     PORT: int = 8080
-    DEBUG: bool = False if APP_ENV != "production" else True
+    DEBUG: bool = True if APP_ENV != "development" else False  # 开发模式下启动调试
     API_PREFIX: str = "/api"
     SECRET_KEY: str  # !必须提供
     WORKERS: int = 1 if APP_ENV != "production" else 4

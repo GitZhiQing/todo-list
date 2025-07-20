@@ -1,51 +1,55 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter
 
-from app import schemas
+from app.core.exception import BizException
+from app.core.handlers import success
 from app.crud import todo_crud
 from app.deps import session_dep
+from app.schemas import BaseResponse, PageResult, Todo, TodoCreate, TodoUpdate
 
 router = APIRouter()
 
 
-@router.post("/", response_model=schemas.Todo, status_code=201)
-async def create_todo(session: session_dep, todo_in: schemas.TodoCreate):
-    return await todo_crud.create(session, todo_in=todo_in)
+@router.post("/", response_model=BaseResponse[Todo], status_code=201)
+async def create_todo(session: session_dep, todo_in: TodoCreate):
+    """创建 Todo 项"""
+    todo = await todo_crud.create(session, todo_in=todo_in)
+    return success(todo)
 
 
-@router.get("/", response_model=list[schemas.Todo])
+@router.get("/", response_model=BaseResponse[PageResult[Todo]])
 async def read_todos(
     session: session_dep,
-    skip: int = 0,
-    limit: int = 100,
+    page: int = 1,
+    size: int = 10,
 ):
-    return await todo_crud.get_multi(session, skip=skip, limit=limit)
+    """获取所有 Todo 项"""
+    skip = (page - 1) * size
+    total = await todo_crud.count(session)
+    items = await todo_crud.get_multi(session, skip=skip, limit=size)
+    return success(PageResult(total=total, page=page, size=size, items=items))
 
 
-@router.get("/{todo_id}", response_model=schemas.Todo)
+@router.get("/{todo_id}", response_model=BaseResponse[Todo])
 async def read_todo(session: session_dep, todo_id: int):
-    todo = await todo_crud.get(session, todo_id=todo_id)
-    if not todo:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return todo
+    """获取指定 Todo 项"""
+    todo = await todo_crud.get_or_404(session, todo_id=todo_id)
+    return success(todo)
 
 
-@router.put("/{todo_id}", response_model=schemas.Todo)
+@router.put("/{todo_id}", response_model=BaseResponse[Todo])
 async def update_todo(
     session: session_dep,
     todo_id: int,
-    todo_in: schemas.TodoUpdate,
+    todo_in: TodoUpdate,
 ):
+    """更新指定 Todo 项"""
     updated = await todo_crud.update(session, todo_id=todo_id, todo_in=todo_in)
-    if not updated:
-        raise HTTPException(status_code=404, detail="Todo not found")
-    return updated
+    return success(updated)
 
 
 @router.delete("/{todo_id}", status_code=204)
-async def delete_todo(
-    session: session_dep,
-    todo_id: int,
-):
+async def delete_todo(session: session_dep, todo_id: int):
+    """删除指定 Todo 项"""
     deleted = await todo_crud.delete(session, todo_id=todo_id)
     if not deleted:
-        raise HTTPException(status_code=404, detail="Todo not found")
+        raise BizException(code=404, msg="Todo not found")

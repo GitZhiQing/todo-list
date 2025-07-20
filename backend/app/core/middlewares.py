@@ -6,7 +6,7 @@ from fastapi.middleware.trustedhost import TrustedHostMiddleware
 from app.core.config import settings
 
 
-def register_middleware(app: FastAPI):
+def register_middlewares(app: FastAPI):
     """注册中间件"""
     # CORS：允许指定前端地址跨域访问
     app.add_middleware(

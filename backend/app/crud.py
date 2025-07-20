@@ -1,6 +1,7 @@
-from sqlalchemy import select
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from app.core.exception import BizException
 from app.models import Todo
 from app.schemas import TodoCreate, TodoUpdate
 
@@ -18,15 +19,19 @@ class TodoCRUD:
         result = await session.execute(stmt)
         return result.scalar_one_or_none()
 
+    async def get_or_404(self, session: AsyncSession, *, todo_id: int) -> Todo:
+        todo = await self.get(session, todo_id=todo_id)
+        if not todo:
+            raise BizException(code=404, msg="Todo not found")
+        return todo
+
     async def get_multi(self, session: AsyncSession, *, skip: int = 0, limit: int = 100) -> list[Todo]:
         stmt = select(Todo).offset(skip).limit(limit)
         result = await session.execute(stmt)
         return result.scalars().all()
 
-    async def update(self, session: AsyncSession, *, todo_id: int, todo_in: TodoUpdate) -> Todo | None:
-        db_todo = await self.get(session, todo_id=todo_id)
-        if not db_todo:
-            return None
+    async def update(self, session: AsyncSession, *, todo_id: int, todo_in: TodoUpdate) -> Todo:
+        db_todo = await self.get_or_404(session, todo_id=todo_id)
         update_data = todo_in.model_dump(exclude_unset=True)
         for key, value in update_data.items():
             setattr(db_todo, key, value)
@@ -40,6 +45,9 @@ class TodoCRUD:
         await session.delete(db_todo)
         await session.flush()
         return True
+
+    async def count(self, session: AsyncSession) -> int:
+        return await session.scalar(select(func.count(Todo.id)))
 
 
 todo_crud = TodoCRUD()
