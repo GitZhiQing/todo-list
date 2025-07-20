@@ -12,6 +12,11 @@
     "lint": "run-s lint:*"
   },
   "dependencies": {
+    "@element-plus/icons-vue": "^2.3.1",
+    "@vueuse/core": "^13.5.0",
+    "axios": "^1.10.0",
+    "element-plus": "^2.10.4",
+    "lodash-es": "^4.17.21",
     "pinia": "^3.0.3",
     "vue": "^3.5.17",
     "vue-router": "^4.5.1"
@@ -25,7 +30,11 @@
     "globals": "^16.2.0",
     "npm-run-all2": "^8.0.4",
     "oxlint": "~1.1.0",
+    "sass-embedded": "^1.89.2",
+    "unplugin-auto-import": "^19.3.0",
+    "unplugin-vue-components": "^28.8.0",
     "vite": "npm:rolldown-vite@latest",
+    "vite-plugin-inspect": "^11.3.0",
     "vite-plugin-vue-devtools": "^7.7.7"
   }
 }
