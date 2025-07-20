@@ -16,6 +16,13 @@ async def create_todo(session: session_dep, todo_in: TodoCreate):
     return success(todo)
 
 
+@router.get("/{todo_id}", response_model=BaseResponse[Todo])
+async def read_todo(session: session_dep, todo_id: int):
+    """获取指定 Todo 项"""
+    todo = await todo_crud.get_or_404(session, todo_id=todo_id)
+    return success(todo)
+
+
 @router.get("/", response_model=BaseResponse[PageResult[Todo]])
 async def read_todos(
     session: session_dep,
@@ -27,13 +34,6 @@ async def read_todos(
     total = await todo_crud.count(session)
     items = await todo_crud.get_multi(session, skip=skip, limit=size)
     return success(PageResult(total=total, page=page, size=size, items=items))
-
-
-@router.get("/{todo_id}", response_model=BaseResponse[Todo])
-async def read_todo(session: session_dep, todo_id: int):
-    """获取指定 Todo 项"""
-    todo = await todo_crud.get_or_404(session, todo_id=todo_id)
-    return success(todo)
 
 
 @router.put("/{todo_id}", response_model=BaseResponse[Todo])
