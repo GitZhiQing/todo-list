@@ -8,6 +8,7 @@ class TodoCreate(BaseModel):
 
     title: str
     description: str | None = None
+    deadline: int | None = None
 
 
 class TodoUpdate(BaseModel):
@@ -16,6 +17,7 @@ class TodoUpdate(BaseModel):
     title: str | None = None
     description: str | None = None
     completed: bool | None = None
+    deadline: int | None = None
 
 
 class Todo(BaseModel):
@@ -28,6 +30,7 @@ class Todo(BaseModel):
     title: str | None = None
     description: str | None = None
     completed: bool | None = None
+    deadline: int | None = None
     created_at: int
     updated_at: int
     model_config = ConfigDict(from_attributes=True)
