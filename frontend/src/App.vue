@@ -1,8 +1,13 @@
 <template>
-  <app-title />
-  <app-sections />
+  <div class="app-container">
+    <el-container>
+      <el-main>
+        <app-title />
+        <app-sections />
+      </el-main>
+    </el-container>
+  </div>
 </template>
-
 <script setup>
 import AppTitle from './components/AppTitle.vue';
 import AppSections from './components/AppSections.vue';
@@ -15,3 +20,10 @@ onMounted(() => {
   store.fetchTodos(); // 组件挂载时获取初始数据
 });
 </script>
+<style>
+.app-container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+}
+</style>

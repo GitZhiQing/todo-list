@@ -1,15 +1,34 @@
 <template>
-  <form @submit.prevent="add">
-    <input type="text"
-           placeholder="任务标题"
-           v-model="newTodoTitle">
-    <input type="text"
-           placeholder="任务描述"
-           v-model="newTodoDescription">
-    <button type="submit">添加</button>
-  </form>
+  <el-form @submit.prevent="add"
+           class="todo-form">
+    <el-form-item>
+      <el-input v-model="newTodoTitle"
+                placeholder="任务标题"
+                clearable />
+    </el-form-item>
+    <el-form-item>
+      <el-input v-model="newTodoDescription"
+                placeholder="任务描述"
+                clearable
+                type="textarea"
+                :rows="2" />
+    </el-form-item>
+    <el-form-item>
+      <el-button type="primary"
+                 native-type="submit">添加</el-button>
+    </el-form-item>
+  </el-form>
 </template>
 
+<style scoped>
+.todo-form {
+  margin: 20px 0;
+  padding: 20px;
+  background: #fff;
+  border-radius: 4px;
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+}
+</style>
 <script setup>
 import { ref } from 'vue';
 
