@@ -26,7 +26,7 @@
 
 ### 前端
 
-使用 pnpm 管理依赖并运行项目。
+使用 [pnpm](https://pnpm.io/zh/motivation) 管理依赖并运行项目。
 
 ```bash
 pnpm i && pnpm dev
@@ -42,7 +42,7 @@ VITE_API_TIMEOUT=10000
 
 ### 后端
 
-使用 uv 管理依赖并运行项目。
+使用 [uv](https://docs.astral.sh/uv/) 管理依赖并运行项目。
 
 ```bash
 uv run run.py
