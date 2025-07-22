@@ -20,6 +20,7 @@ class Todo(Base, TimestampMixin):
     title: Mapped[str] = mapped_column(nullable=False)
     description: Mapped[str | None] = mapped_column(nullable=True)
     completed: Mapped[bool] = mapped_column(default=False)
+    deadline: Mapped[int | None] = mapped_column(nullable=True)
 
     def __repr__(self) -> str:
         return f"<Todo(id={self.id}, title={self.title}, completed={self.completed})>"

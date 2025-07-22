@@ -2,13 +2,14 @@ from fastapi import FastAPI
 from fastapi.openapi.utils import validation_error_response_definition
 
 from app.api.routes import router as api_router
-from app.core.config import settings
+from app.core.config import get_settings
 from app.core.handlers import register_handlers
 from app.core.lifecycle import lifespan
 from app.core.middlewares import register_middlewares
 
 
 def create_app() -> FastAPI:
+    settings = get_settings()
     app = FastAPI(
         title=settings.APP_NAME,
         openapi_url=f"{settings.API_PREFIX}/openapi.json",

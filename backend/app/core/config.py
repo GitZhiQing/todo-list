@@ -1,8 +1,10 @@
+from functools import lru_cache
 from pathlib import Path
 from typing import Literal
 
 from dotenv import load_dotenv
-from pydantic import computed_field
+from loguru import logger
+from pydantic import ValidationError, computed_field
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -41,5 +43,17 @@ class Settings(BaseSettings):
     )
 
 
-load_dotenv()
-settings = Settings()
+def get_required_fields_with_types(settings_cls: type[BaseSettings]) -> dict[str, type]:
+    """返回字段名到类型的映射"""
+    return {name: field.annotation for name, field in settings_cls.model_fields.items() if field.is_required()}
+
+
+@lru_cache
+def get_settings() -> Settings:
+    try:
+        load_dotenv()
+        return Settings()
+    except ValidationError as e:
+        required = get_required_fields_with_types(Settings)
+        logger.error(f"配置导入错误: {e}\n[!] 缺少必需环境变量 [{', '.join(required)}], 请创建 .env 文件并在其中配置。")
+        exit(1)
