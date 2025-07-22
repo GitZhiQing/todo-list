@@ -1,16 +1,23 @@
 <template>
-  <el-row justify="center">
-    <el-col :span="12">
-      <h1 class="app-title">Todo List</h1>
-    </el-col>
-  </el-row>
+  <h1 class="app-title">
+    <img src="/favicon.svg"
+         alt="Todo Icon"
+         class="title-icon" />
+    <span>Todo List</span>
+  </h1>
 </template>
 
 <style scoped>
 .app-title {
-  text-align: center;
-  color: var(--el-color-primary);
-  margin: 20px 0;
-  font-size: 2rem;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: 20px;
+}
+
+.title-icon {
+  width: 32px;
+  height: 32px;
 }
 </style>
