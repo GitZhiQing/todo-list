@@ -1,33 +1,30 @@
 <template>
-  <el-card class="section-card"
-           v-if="doChild.length">
+  <el-card class="section-card" v-if="doChild.length" :shadow="headline === '未完成' ? 'hover' : 'never'"
+    :style="{ '--header-bg': headline === '未完成' ? '#f0f7ff' : '#f8f9fa' }">
     <template #header>
-      <h2>{{ headline }}</h2>
+      <h2 :style="{ background: 'var(--header-bg)', padding: '10px', borderRadius: '4px' }">
+        {{ headline }} ({{ doChild.length }})
+      </h2>
     </template>
     <el-checkbox-group>
-      <div v-for="todo in doChild"
-           :key="todo.id"
-           class="todo-item">
-        <el-checkbox v-model="todo.completed"
-                     @change="(val) => handleToggleDone(todo, val)"
-                     :label="todo.title"
-                     :disabled="isUpdating"
-                     :loading="isUpdating">
-          <span :class="{ completed: todo.completed }">
-            {{ todo.description }}
-            <el-tag size="small"
-                    type="info">
-              {{ formatTimestamp(todo.created_at) }}
-            </el-tag>
-          </span>
-        </el-checkbox>
-        <el-button size="small"
-                   type="danger"
-                   @click="deleteTodo(todo.id)"
-                   icon="Delete"
-                   circle
-                   :disabled="isUpdating" />
-      </div>
+      <transition-group name="slide-fade" tag="div">
+        <div v-for="todo in doChild" :key="todo.id" class="todo-item">
+          <el-checkbox v-model="todo.completed" @change="(val) => handleToggleDone(todo, val)" :label="todo.title"
+            :disabled="isUpdating" :loading="isUpdating">
+            <span :class="{ completed: todo.completed }">
+              <el-icon v-if="todo.completed" style="color: #67c23a; margin-right: 5px;">
+                <Check />
+              </el-icon>
+              {{ todo.description }}
+              <el-tag size="small" type="info" style="margin-left: 8px;">
+                {{ formatTimestamp(todo.created_at) }}
+              </el-tag>
+            </span>
+          </el-checkbox>
+          <el-button size="small" type="danger" @click="deleteTodo(todo.id)" :icon="Delete" circle
+            :disabled="isUpdating" />
+        </div>
+      </transition-group>
     </el-checkbox-group>
   </el-card>
 </template>
@@ -36,6 +33,7 @@
 import { ref } from 'vue';
 import { useTodoStore } from '@/store/todo';
 import { ElMessage, ElMessageBox } from 'element-plus';
+import { Check, Delete } from '@element-plus/icons-vue';
 
 const store = useTodoStore();
 const isUpdating = ref(false);
@@ -97,14 +95,27 @@ async function deleteTodo(id) {
 <style scoped>
 .section-card {
   margin-bottom: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.section-card:hover {
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
 }
 
 .todo-item {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 8px 0;
-  border-bottom: 1px solid #eee;
+  padding: 10px;
+  border-radius: 4px;
+  margin-bottom: 8px;
+  transition: all 0.3s ease;
+}
+
+.todo-item:hover {
+  background-color: #f9f9f9;
+  transform: translateY(-2px);
 }
 
 .completed {
@@ -112,8 +123,18 @@ async function deleteTodo(id) {
   color: #999;
 }
 
-/* 优化复选框样式 */
-.el-checkbox {
-  margin-right: 10px;
+/* 过渡动画 */
+.slide-fade-enter-active {
+  transition: all 0.3s ease;
+}
+
+.slide-fade-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-enter-from,
+.slide-fade-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>
