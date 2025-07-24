@@ -1,5 +1,3 @@
-from typing import TypeVar
-
 from pydantic import BaseModel, ConfigDict
 
 
@@ -36,18 +34,12 @@ class Todo(BaseModel):
     model_config = ConfigDict(from_attributes=True)
 
 
-DataType = TypeVar("DataType")
-
-
 class BaseResponse[DataType](BaseModel):
     """通用 API 响应模型"""
 
     code: int = 200
     msg: str = "success"
     data: DataType | None = None
-
-
-ItemType = TypeVar("ItemType ")
 
 
 class PageResult[ItemType](BaseModel):
